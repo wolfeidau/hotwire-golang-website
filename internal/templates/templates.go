@@ -106,7 +106,7 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 		return err
 	}
 
-	log.Ctx(c.Request().Context()).Debug().Str("name", tmpl.name).Str("dur", time.Now().Sub(start).String()).Str("layout", tmpl.layout).Msg("execute template")
+	log.Ctx(c.Request().Context()).Debug().Str("name", tmpl.name).Str("dur", time.Since(start).String()).Str("layout", tmpl.layout).Msg("execute template")
 
 	return nil
 }

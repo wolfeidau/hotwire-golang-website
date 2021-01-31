@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"io"
@@ -78,6 +79,8 @@ func (hw *Hotwire) Load(c echo.Context) error {
 
 	ticker := time.NewTicker(3 * time.Second)
 
+	seq := 0
+
 	for {
 		select {
 		case <-req.Context().Done():
@@ -96,17 +99,53 @@ func (hw *Hotwire) Load(c echo.Context) error {
 
 			log.Ctx(req.Context()).Debug().Str("buf", buf.String()).Msg("event")
 
-			_, err = writeMessageWithoutNewline(res.Writer, buf.String())
+			err = writeMessage(res.Writer, seq, "message", buf.String())
 			if err != nil {
 				return c.NoContent(http.StatusInternalServerError)
 			}
 
 			flusher.Flush()
+
+			seq++
 		}
 	}
 }
 
-// This method strips line feeds from the templated result to enable single line responses on the events stream
-func writeMessageWithoutNewline(w io.Writer, message string) (int, error) {
-	return fmt.Fprintf(w, "data: %s\n\n", strings.ReplaceAll(message, "\n", ""))
+// writeMessage this constructs an SSE compatible message with a sequence, and
+// line breaks from the output of a template
+//
+// This looks something like this:
+//
+//   event: message
+//   id: 6
+//   data: <turbo-stream action="replace" target="load">
+//   data:     <template>
+//   data:         <span id="load">04:20:13: 1.9</span>
+//   data:     </template>
+//   data: </turbo-stream>
+//
+func writeMessage(w io.Writer, id int, event, message string) error {
+
+	_, err := fmt.Fprintf(w, "event: %s\nid: %d\n", event, id)
+	if err != nil {
+		return err
+	}
+
+	scanner := bufio.NewScanner(bytes.NewBufferString(message))
+	for scanner.Scan() {
+		_, err = fmt.Fprintf(w, "data: %s\n", scanner.Text())
+		if err != nil {
+			return err
+		}
+	}
+	if err = scanner.Err(); err != nil {
+		return err
+	}
+
+	_, err = fmt.Fprint(w, "\n")
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -21,10 +21,6 @@ import (
 	"github.com/wolfeidau/hotwire-golang-website/views"
 )
 
-const (
-	turboStreamMedia = "text/vnd.turbo-stream.html"
-)
-
 var cfg = new(flags.ServerAPI)
 
 func main() {
@@ -36,7 +32,7 @@ func main() {
 
 	// enable pretty output for local development
 	if cfg.Local {
-		log.Logger = logger.NewLogger()
+		log.Logger = logger.NewLogger().Level(cfg.ZerologLevel())
 		output = zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.Kitchen}
 	}
 
@@ -64,10 +60,11 @@ func main() {
 		middleware.ZeroLogConfig{
 			Fields: flds,
 			Output: output,
+			Level:  cfg.ZerologLevel(),
 		},
 	))
 
-	e.Use(logger.RequestLoggerWithConfig(logger.RequestLoggerConfig{}))
+	e.Use(middleware.ZeroLogRequestLog())
 	e.Use(echomiddleware.Gzip())
 
 	hotwire := server.NewHotwire()
