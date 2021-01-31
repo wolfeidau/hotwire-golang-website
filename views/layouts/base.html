@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>{{template "title"}}</title>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+
+  <script crossorigin="anonymous" src="https://unpkg.com/@hotwired/turbo@7.0.0-beta.3/dist/turbo.es5-umd.js"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.14/dist/css/uikit.min.css"
+    integrity="sha256-QCcX9tE+r2uzx3OO66o1ra0Kf4wNDYIzv6BETff9BVY=" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.14/dist/js/uikit.min.js"
+    integrity="sha256-GUgWjCeqU2XItPzRg89S8W/Z0sDTe/nzP9qIr8+M4fo=" crossorigin="anonymous"></script>
+
+  {{template "head"}}
+  {{define "head"}}{{end}}
+
+</head>
+
+<body>
+  {{template "body" .}}
+</body>
+
+</html>

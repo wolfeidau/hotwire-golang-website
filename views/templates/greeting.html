@@ -1,0 +1,9 @@
+{{define "title"}}Hotwire{{end}}
+{{define "body"}}
+  <h1>The Greeting Page</h1>
+  <turbo-frame id="greeting_frame">
+    <p><span id="hello">Hello</span>,
+      <span id="person">{{index . "person"}}</span>!
+    </p>
+  </turbo-frame>
+{{end}}

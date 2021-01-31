@@ -1,0 +1,54 @@
+{{define "title"}}Hotwire{{end}}
+
+{{define "head"}}
+<script type="text/javascript">
+  if (window["EventSource"] && window["Turbo"]) {
+    Turbo.connectStreamSource(new EventSource("/load"));
+  } else {
+    console.warn("Turbo Streams over SSE not available");
+  }
+</script>
+{{end}}
+
+{{define "body"}}
+<div class="uk-padding">
+  <section class="uk-padding">
+    <h1 class="uk-heading-small">Greeting section</h1>
+
+    <h2>Turbo Drive</h2>
+    <div>
+      <a href="/greeting?person=Josh">Click here to greet Josh (fast)</a>
+    </div>
+
+    <h2>Turbo Frame</h2>
+    <turbo-frame id="greeting_frame">
+      <a href="/greeting?person=Josh">Click here to greet Josh</a>
+    </turbo-frame>
+  </section>
+  <section class="uk-padding">
+    <h1 class="uk-heading-small">Pings section</h1>
+
+    <h2>Regular Form</h2>
+    <form action="/pinger" data-turbo="false" method="post">
+      <button type="submit">Ping</button>
+    </form>
+    <h2>Turbo Stream (Form)</h2>
+    <form action="/pinger" method="post">
+      <button type="submit">Ping</button>
+    </form>
+    <div class="uk-padding">
+      <p>Ping times</p>
+      <ol id="pings"></ol>
+    </div>
+  </section>
+
+  <section class="uk-padding">
+    <h1>Performance section</h1>
+    <h2>Turbo Stream (SSE)</h2>
+    <div>
+      <p>Number of Go Routines</p>
+      <span id="load">waiting...</span>
+    </div>
+  </section>
+</div>
+{{end}}

@@ -1,0 +1,10 @@
+/dist
+/bin
+/coverage.*
+.envrc
+/awsmocks
+/handler.zip
+/*.out.yaml
+/vendor
+/*.sarif
+/.certs
