@@ -3,9 +3,9 @@ package templates
 import (
 	"fmt"
 	"io"
-	"io/fs"
 	"net/http"
 	"path"
+	"path/filepath"
 	"text/template"
 	"time"
 
@@ -40,8 +40,8 @@ func New() *TemplateRenderer {
 }
 
 // AddWithLayout register one or more templates using the provided layout
-func (t *TemplateRenderer) AddWithLayout(fsys fs.FS, layout string, patterns ...string) error {
-	filenames, err := readFileNames(fsys, patterns...)
+func (t *TemplateRenderer) AddWithLayout(basepath string, layout string, patterns ...string) error {
+	filenames, err := readFileNames(basepath, patterns...)
 	if err != nil {
 		return errors.Wrap(err, "failed to list using file pattern")
 	}
@@ -55,7 +55,7 @@ func (t *TemplateRenderer) AddWithLayout(fsys fs.FS, layout string, patterns ...
 		t.templates[tname] = &Template{
 			layout:   lname,
 			name:     tname,
-			template: template.Must(template.New(tname).Funcs(templateFuncs).ParseFS(fsys, layout, f)),
+			template: template.Must(template.New(tname).Funcs(templateFuncs).ParseFiles(path.Join(basepath, layout), f)),
 		}
 	}
 
@@ -63,8 +63,8 @@ func (t *TemplateRenderer) AddWithLayout(fsys fs.FS, layout string, patterns ...
 }
 
 // Add add a template to the registry
-func (t *TemplateRenderer) Add(fsys fs.FS, patterns ...string) error {
-	filenames, err := readFileNames(fsys, patterns...)
+func (t *TemplateRenderer) Add(basepath string, patterns ...string) error {
+	filenames, err := readFileNames(basepath, patterns...)
 	if err != nil {
 		return errors.Wrap(err, "failed to read file names using file pattern")
 	}
@@ -75,7 +75,7 @@ func (t *TemplateRenderer) Add(fsys fs.FS, patterns ...string) error {
 		log.Debug().Str("filename", tname).Msg("register message")
 		t.templates[tname] = &Template{
 			name:     tname,
-			template: template.Must(template.New(tname).Funcs(templateFuncs).ParseFS(fsys, f)),
+			template: template.Must(template.New(tname).Funcs(templateFuncs).ParseFiles(f)),
 		}
 	}
 
@@ -112,11 +112,11 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 	return nil
 }
 
-func readFileNames(fsys fs.FS, patterns ...string) ([]string, error) {
+func readFileNames(basepath string, patterns ...string) ([]string, error) {
 	var filenames []string
 
 	for _, pattern := range patterns {
-		list, err := fs.Glob(fsys, pattern)
+		list, err := filepath.Glob(path.Join(basepath, pattern))
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to list using file pattern")
 		}
