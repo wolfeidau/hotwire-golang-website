@@ -18,7 +18,6 @@ import (
 	"github.com/wolfeidau/hotwire-golang-website/internal/logger"
 	"github.com/wolfeidau/hotwire-golang-website/internal/server"
 	"github.com/wolfeidau/hotwire-golang-website/internal/templates"
-	"github.com/wolfeidau/hotwire-golang-website/views"
 )
 
 var cfg = new(flags.ServerAPI)
@@ -42,12 +41,12 @@ func main() {
 
 	render := templates.New()
 
-	err := render.AddWithLayout(views.Content, "layouts/base.html", "templates/*.html")
+	err := render.AddWithLayout("views", "layouts/base.html", "templates/*.html")
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to load render")
 	}
 
-	err = render.Add(views.Content, "messages/*.html")
+	err = render.Add("views", "messages/*.html")
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to load render")
 	}

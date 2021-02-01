@@ -8,10 +8,7 @@ This service illustrates how to use turbo to enable updates to a website using p
 
 1. Uses [html/template](https://golang.org/pkg/html/template/) for [views](views).
 2. Uses [echo](https://echo.labstack.com/) library to simplify routing.
-3. Uses [Go 1.16](https://tip.golang.org/doc/go1.16) [Embedded Files](https://tip.golang.org/doc/go1.16#library-embed) to simplify adding templates to binary.
-4. Uses a CDN to host all css / JS libraries [base.html](views/layouts/base.html).
-
-**Note:** As mentioned this project requires **Go 1.16** which is currently in `rc1`.
+3. Uses a CDN to host all css / JS libraries [base.html](views/layouts/base.html).
 
 # Hotwire Turbo
 
@@ -25,7 +22,7 @@ Most of the server side logic is in [hotwire.go](internal/server/hotwire.go).
 
 # Running
 
-To get this project running you need to setup some certificates, in my case I use mkcert and there is a target in the makefile.
+To get this project running you need to setup some certificates, in my case I use https://github.com/FiloSottile/mkcert and there is a target in the makefile.
 
 ```
 make certs
