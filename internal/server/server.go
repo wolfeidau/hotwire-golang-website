@@ -22,6 +22,7 @@ type ServerInterface interface {
 	Index(echo.Context) error
 	Greeting(echo.Context) error
 	Pinger(echo.Context) error
+	Memory(echo.Context) error
 	Load(echo.Context) error
 }
 
@@ -30,5 +31,6 @@ func RegisterHandlers(router EchoRouter, si ServerInterface, m ...echo.Middlewar
 	router.GET("/", si.Index).Name = "index"
 	router.GET("/greeting", si.Greeting).Name = "greeting"
 	router.POST("/pinger", si.Pinger).Name = "pinger"
+	router.GET("/memory", si.Memory).Name = "memory"
 	router.GET("/load", si.Load).Name = "load"
 }
