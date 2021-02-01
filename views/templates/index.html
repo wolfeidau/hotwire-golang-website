@@ -7,6 +7,11 @@
   } else {
     console.warn("Turbo Streams over SSE not available");
   }
+  if (window["WebSocket"] && window["Turbo"]) {
+    Turbo.connectStreamSource(new WebSocket(`wss://${window.location.host}/memory`));
+  } else {
+    console.warn("Turbo Streams over SSE not available");
+  }
 </script>
 {{end}}
 
@@ -48,6 +53,11 @@
     <div>
       <p>Number of Go Routines</p>
       <span id="load">waiting...</span>
+    </div>
+    <h2>Turbo Stream (WebSocket)</h2>
+    <div>
+      <p>Number of Go Memory</p>
+      <span id="memory">waiting...</span>
     </div>
   </section>
 </div>

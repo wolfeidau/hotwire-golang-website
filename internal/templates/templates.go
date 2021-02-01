@@ -14,6 +14,12 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+var templateFuncs = template.FuncMap{
+	"getTime": func() string {
+		return time.Now().Format("15:04:05")
+	},
+}
+
 // Template stores the meta data for each template, and whether it uses a layout
 type Template struct {
 	layout   string
@@ -49,7 +55,7 @@ func (t *TemplateRenderer) AddWithLayout(fsys fs.FS, layout string, patterns ...
 		t.templates[tname] = &Template{
 			layout:   lname,
 			name:     tname,
-			template: template.Must(template.ParseFS(fsys, layout, f)),
+			template: template.Must(template.New(tname).Funcs(templateFuncs).ParseFS(fsys, layout, f)),
 		}
 	}
 
@@ -69,7 +75,7 @@ func (t *TemplateRenderer) Add(fsys fs.FS, patterns ...string) error {
 		log.Debug().Str("filename", tname).Msg("register message")
 		t.templates[tname] = &Template{
 			name:     tname,
-			template: template.Must(template.ParseFS(fsys, f)),
+			template: template.Must(template.New(tname).Funcs(templateFuncs).ParseFS(fsys, f)),
 		}
 	}
 
@@ -79,12 +85,7 @@ func (t *TemplateRenderer) Add(fsys fs.FS, patterns ...string) error {
 // Render renders a template document
 func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
 
-	// Add global methods if data is a map
-	if viewContext, isMap := data.(map[string]interface{}); isMap {
-		viewContext["reverse"] = c.Echo().Reverse
-	}
-
-	log.Ctx(c.Request().Context()).Info().Str("name", name).Msg("Render")
+	log.Ctx(c.Request().Context()).Debug().Str("name", name).Msg("Render")
 
 	tmpl, ok := t.templates[name]
 	if !ok {

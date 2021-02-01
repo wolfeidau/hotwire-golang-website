@@ -10,12 +10,17 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
 )
 
 const (
 	turboStreamMedia = "text/vnd.turbo-stream.html"
+)
+
+var (
+	upgrader = websocket.Upgrader{}
 )
 
 // Hotwire hotwire handlers which demonstate some of the capabilities
@@ -61,6 +66,40 @@ func (hw *Hotwire) Pinger(c echo.Context) error {
 	return c.Render(http.StatusOK, "ping.html", map[string]interface{}{
 		"pingTime": 0,
 	})
+}
+
+// Memory uses websockets
+func (hw *Hotwire) Memory(c echo.Context) error {
+
+	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
+	if err != nil {
+		return err
+	}
+
+	defer ws.Close()
+
+	ticker := time.NewTicker(3 * time.Second)
+	mstats := new(runtime.MemStats)
+
+	for range ticker.C {
+		buf := new(bytes.Buffer)
+
+		runtime.ReadMemStats(mstats)
+
+		err := c.Echo().Renderer.Render(buf, "memory.turbo-stream.html", mstats, c)
+		if err != nil {
+			log.Ctx(c.Request().Context()).Error().Err(err).Msg("failed to build message")
+			break
+		}
+
+		err = ws.WriteMessage(websocket.TextMessage, buf.Bytes())
+		if err != nil {
+			log.Ctx(c.Request().Context()).Error().Err(err).Msg("send failed")
+			break
+		}
+	}
+
+	return nil
 }
 
 // Load use http2 server sent events to stream load information
