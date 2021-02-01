@@ -1,6 +1,6 @@
 # hotwire-golang-website
 
-This project provides some working examples using [Go](https://golang.org) the [hotwire/turbo](https://turbo.hotwire.dev/) library published by [basecamp](https://basecamp.com/).
+This project provides some working examples using [Go](https://golang.org) the [hotwire/turbo](https://turbo.hotwire.dev/) library published by [basecamp](https://basecamp.com/). This is based on a great post about [Hotwire: HTML Over The Wire](https://delitescere.medium.com/hotwire-html-over-the-wire-2c733487268c) by [@delitescere](https://twitter.com/delitescere).
 
 # Overview
 
@@ -12,6 +12,16 @@ This service illustrates how to use turbo to enable updates to a website using p
 4. Uses a CDN to host all css / JS libraries [base.html](views/layouts/base.html).
 
 **Note:** As mentioned this project requires **Go 1.16** which is currently in `rc1`.
+
+# Hotwire Turbo
+
+In this site I have implemented:
+
+1. [Turbo Drive](https://turbo.hotwire.dev/handbook/drive)
+2. [Turbo Frames](https://turbo.hotwire.dev/handbook/frames)
+3. [Turbo Streams](https://turbo.hotwire.dev/handbook/streams) with [Server Sent Events (SSE)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) and [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
+
+Most of the server side logic is in [hotwire.go](internal/server/hotwire.go).
 
 # Running
 
