@@ -9,6 +9,7 @@ This service illustrates how to use turbo to enable updates to a website using p
 1. Uses [html/template](https://golang.org/pkg/html/template/) for [views](views).
 2. Uses [echo](https://echo.labstack.com/) library to simplify routing.
 3. Uses a CDN to host all css / JS libraries [base.html](views/layouts/base.html).
+4. Uses [esbuild](https://esbuild.github.io) to automatically bundle JS assets on startup [assets.go](internal/assets/assets.go).
 
 # Hotwire Turbo
 
@@ -17,9 +18,15 @@ In this site I have implemented:
 1. [Turbo Drive](https://turbo.hotwire.dev/handbook/drive)
 2. [Turbo Frames](https://turbo.hotwire.dev/handbook/frames)
 3. [Turbo Streams](https://turbo.hotwire.dev/handbook/streams) with [Server Sent Events (SSE)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) and [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
+4. [stimulus](https://stimulus.hotwire.dev/)
 
 Most of the server side logic is in [hotwire.go](internal/server/hotwire.go).
 
+
+# Prerequisites
+
+* Go 1.13 or later with support for Go Modules, used to build the service.
+* [Node.js](https://nodejs.org/en/) 12 or later, which is only used to install our asset building dependencies.
 # Running
 
 To get this project running you need to setup some certificates, in my case I use https://github.com/FiloSottile/mkcert and there is a target in the makefile.

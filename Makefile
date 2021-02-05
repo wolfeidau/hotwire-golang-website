@@ -72,7 +72,11 @@ test:
 	@go tool cover -func=coverage.txt
 .PHONY: test
 
-watch: $(BIN_DIR)/reflex
+install:
+	@cd assets && npm ci
+.PHONY: install
+
+watch: $(BIN_DIR)/reflex install
 	$(BIN_DIR)/reflex -r "$(WATCH)" -s -- make start
 .PHONY: watch
 

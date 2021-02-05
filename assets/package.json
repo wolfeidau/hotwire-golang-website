@@ -1,0 +1,24 @@
+{
+  "name": "hotwire-golang-website",
+  "version": "1.0.0",
+  "description": "This project provides some working examples using [Go](https://golang.org) the [hotwire/turbo](https://turbo.hotwire.dev/) library published by [basecamp](https://basecamp.com/). This is based on a great post about [Hotwire: HTML Over The Wire](https://delitescere.medium.com/hotwire-html-over-the-wire-2c733487268c) by [@delitescere](https://twitter.com/delitescere).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wolfeidau/hotwire-golang-website.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wolfeidau/hotwire-golang-website/issues"
+  },
+  "homepage": "https://github.com/wolfeidau/hotwire-golang-website#readme",
+  "dependencies": {
+    "@stimulus/core": "^2.0.0",
+    "esbuild": "^0.8.41"
+  }
+}
