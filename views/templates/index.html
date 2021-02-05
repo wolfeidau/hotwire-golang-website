@@ -60,5 +60,12 @@
       <span id="memory">waiting...</span>
     </div>
   </section>
+
+  <section class="uk-padding" data-controller="clipboard">
+    <h1>Input section</h1>
+    <h2>Stimulus</h2>
+    PIN: <input data-clipboard-target="source" type="text" value="1234" readonly>
+    <button data-action="clipboard#copy">Copy to Clipboard</button>
+  </section>
 </div>
 {{end}}

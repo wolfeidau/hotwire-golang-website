@@ -8,3 +8,4 @@
 /vendor
 /*.sarif
 /.certs
+node_modules/

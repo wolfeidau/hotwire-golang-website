@@ -4,8 +4,7 @@ go 1.16
 
 require (
 	github.com/alecthomas/kong v0.2.12
-	github.com/cespare/reflex v0.3.0 // indirect
-	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/evanw/esbuild v0.8.42
 	github.com/gorilla/websocket v1.4.2
 	github.com/labstack/echo/v4 v4.1.17
 	github.com/pkg/errors v0.8.1

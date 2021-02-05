@@ -8,12 +8,14 @@ import (
 	"time"
 
 	"github.com/alecthomas/kong"
+	"github.com/evanw/esbuild/pkg/api"
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	middleware "github.com/wolfeidau/echo-middleware"
 	"github.com/wolfeidau/hotwire-golang-website/internal/app"
+	"github.com/wolfeidau/hotwire-golang-website/internal/assets"
 	"github.com/wolfeidau/hotwire-golang-website/internal/flags"
 	"github.com/wolfeidau/hotwire-golang-website/internal/logger"
 	"github.com/wolfeidau/hotwire-golang-website/internal/server"
@@ -69,6 +71,12 @@ func main() {
 	hotwire := server.NewHotwire()
 
 	server.RegisterHandlers(e, hotwire)
+
+	// register the asset bundler which will build then serve any asset files
+	e.Use(assets.BundlerWithConfig(assets.BundlerConfig{
+		EntryPoints: []string{"assets/src/index.ts"},
+		Sourcemap:   api.SourceMapInline,
+	}))
 
 	log.Info().Str("port", cfg.Port).Str("cert", cfg.CertFile).Msg("listing")
 	log.Error().Err(e.StartTLS(fmt.Sprintf(":%s", cfg.Port), cfg.CertFile, cfg.KeyFile)).Msg("failed to bind port")
