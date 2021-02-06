@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"time"
 
@@ -13,9 +14,9 @@ import (
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	assets "github.com/wolfeidau/echo-esbuild-middleware"
 	middleware "github.com/wolfeidau/echo-middleware"
 	"github.com/wolfeidau/hotwire-golang-website/internal/app"
-	"github.com/wolfeidau/hotwire-golang-website/internal/assets"
 	"github.com/wolfeidau/hotwire-golang-website/internal/flags"
 	"github.com/wolfeidau/hotwire-golang-website/internal/logger"
 	"github.com/wolfeidau/hotwire-golang-website/internal/server"
@@ -74,8 +75,24 @@ func main() {
 
 	// register the asset bundler which will build then serve any asset files
 	e.Use(assets.BundlerWithConfig(assets.BundlerConfig{
-		EntryPoints: []string{"assets/src/index.ts"},
-		Sourcemap:   api.SourceMapInline,
+		EntryPoints:     []string{"assets/src/index.ts"},
+		Outfile:         "bundle.js",
+		InlineSourcemap: cfg.Local,
+		Define: map[string]string{
+			"process.env.NODE_ENV": `"production"`,
+		},
+		OnBuild: func(result api.BuildResult, timeTaken time.Duration) {
+			log.Info().Str("timeTaken", timeTaken.String()).Msg("bundle build complete")
+
+			if len(result.Errors) > 0 {
+				log.Fatal().Fields(map[string]interface{}{
+					"errors": result.Errors,
+				}).Msg("failed to build assets")
+			}
+		},
+		OnRequest: func(req *http.Request, contentLength, code int, timeTaken time.Duration) {
+			log.Ctx(req.Context()).Info().Str("path", req.URL.Path).Int("code", code).Str("timeTaken", timeTaken.String()).Msg("asset served")
+		},
 	}))
 
 	log.Info().Str("port", cfg.Port).Str("cert", cfg.CertFile).Msg("listing")

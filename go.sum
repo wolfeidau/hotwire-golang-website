@@ -37,6 +37,8 @@ github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyC
 github.com/valyala/fasttemplate v1.0.1/go.mod h1:UQGH1tvbgY+Nz5t2n7tXsz52dQxojPUpymEIMZ47gx8=
 github.com/valyala/fasttemplate v1.2.1 h1:TVEnxayobAdVkhQfrfes2IzOB6o+z4roRkPF52WA1u4=
 github.com/valyala/fasttemplate v1.2.1/go.mod h1:KHLXt3tVN2HBp8eijSv/kGJopbvo7S+qRAEEKiv+SiQ=
+github.com/wolfeidau/echo-esbuild-middleware v1.1.0 h1:7NvM3p8pAKfqAv+10e1enQKvq1APXw2S53lR5ebovBo=
+github.com/wolfeidau/echo-esbuild-middleware v1.1.0/go.mod h1:meM6vsU53JwvineWhUrINQvtaxafLQwuzFt5Ul65t08=
 github.com/wolfeidau/echo-middleware v1.1.0 h1:zJaRMlVafEdS8MPTEegL4xhEimyGyj+3Thy2Ye7zyQ0=
 github.com/wolfeidau/echo-middleware v1.1.0/go.mod h1:lQB2Xa99TdV2F0PqnZ6JSi/Ls2tAJbMxjkKhZVl0lsA=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
