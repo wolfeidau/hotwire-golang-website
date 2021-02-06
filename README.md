@@ -9,7 +9,7 @@ This service illustrates how to use turbo to enable updates to a website using p
 1. Uses [html/template](https://golang.org/pkg/html/template/) for [views](views).
 2. Uses [echo](https://echo.labstack.com/) library to simplify routing.
 3. Uses a CDN to host all css / JS libraries [base.html](views/layouts/base.html).
-4. Uses [esbuild](https://esbuild.github.io) to automatically bundle JS assets on startup [assets.go](internal/assets/assets.go).
+4. Uses [esbuild](https://esbuild.github.io) to automatically bundle JS assets on startup using [echo-esbuild-middleware](https://github.com/wolfeidau/echo-esbuild-middleware) to serve them.
 
 # Hotwire Turbo
 
