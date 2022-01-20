@@ -1,7 +1,7 @@
 MODULE_PKG := github.com/wolfeidau/hotwire-golang-website
 WATCH := (.go$$)|(.html$$)
 
-GOLANGCI_VERSION = 1.31.0
+GOLANGCI_VERSION = v1.43.0
 
 GIT_HASH := $(shell git rev-parse --short HEAD)
 BUILD_DATE := $(shell date -u '+%Y%m%dT%H%M%S')
@@ -21,27 +21,9 @@ ci: clean lint test
 
 LDFLAGS := -ldflags="-s -w -X $(MODULE_PKG)/internal/app.BuildDate=${BUILD_DATE} -X $(MODULE_PKG)/internal/app.Commit=${GIT_HASH}"
 
-$(BIN_DIR)/golangci-lint: $(BIN_DIR)/golangci-lint-${GOLANGCI_VERSION}
-	@ln -sf golangci-lint-${GOLANGCI_VERSION} $(BIN_DIR)/golangci-lint
-$(BIN_DIR)/golangci-lint-${GOLANGCI_VERSION}:
-	@curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | BINARY=golangci-lint bash -s -- v${GOLANGCI_VERSION}
-	@mv $(BIN_DIR)/golangci-lint $@
-
-$(BIN_DIR)/mockgen:
-	@go get -u github.com/golang/mock/mockgen
-	@env GOBIN=$(BIN_DIR) GO111MODULE=on go install github.com/golang/mock/mockgen
-
-$(BIN_DIR)/gosec:
-	@go get -u github.com/securego/gosec/v2/cmd/gosec@master
-	@env GOBIN=$(BIN_DIR) GO111MODULE=on go install github.com/securego/gosec/v2/cmd/gosec
-
-$(BIN_DIR)/reflex:
-	@go get -u github.com/cespare/reflex
-	@env GOBIN=$(BIN_DIR) GO111MODULE=on go install github.com/cespare/reflex
-
 mocks: $(BIN_DIR)/mockgen
 	@echo "--- build all the mocks"
-	@bin/mockgen -destination=mocks/session_store.go -package=mocks github.com/dghubble/sessions Store
+	go run github.com/golang/mock/mockgen -destination=mocks/session_store.go -package=mocks github.com/dghubble/sessions Store
 .PHONY: mocks
 
 clean:
@@ -49,21 +31,21 @@ clean:
 	@rm -rf ./dist
 .PHONY: clean
 
-scanpr: $(BIN_DIR)/gosec
-	$(BIN_DIR)/gosec -fmt golint ./...
+scanpr:
+	go run github.com/securego/gosec/v2/cmd/gosec -fmt golint ./...
 
 scan-report: $(BIN_DIR)/gosec
 	$(BIN_DIR)/gosec -no-fail -fmt sarif -out results.sarif ./...
 .PHONY: scan-report
 
-lint: $(BIN_DIR)/golangci-lint
+lint:
 	@echo "--- lint all the things"
-	@$(BIN_DIR)/golangci-lint run
+	@docker run --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v1.43.0 golangci-lint run -v
 .PHONY: lint
 
-lint-fix: $(BIN_DIR)/golangci-lint
+lint-fix:
 	@echo "--- lint all the things"
-	@$(BIN_DIR)/golangci-lint run --fix
+	@docker run --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v1.43.0 golangci-lint run -v --fix
 .PHONY: lint-fix
 
 test:
@@ -76,8 +58,8 @@ install:
 	@cd assets && npm ci
 .PHONY: install
 
-watch: $(BIN_DIR)/reflex install
-	$(BIN_DIR)/reflex -r "$(WATCH)" -s -- make start
+watch: 
+	go run github.com/cespare/reflex -r "$(WATCH)" -s -- make start
 .PHONY: watch
 
 start:
