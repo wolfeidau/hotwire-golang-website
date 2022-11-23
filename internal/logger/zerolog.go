@@ -9,6 +9,11 @@ import (
 )
 
 // NewLogger quick way to create a zerolog logger
-func NewLogger() zerolog.Logger {
-	return log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.Kitchen}).With().Stack().Logger()
+func NewLogger(debug bool) zerolog.Logger {
+	lvl := zerolog.InfoLevel
+	if debug {
+		lvl = zerolog.DebugLevel
+	}
+
+	return log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.Kitchen}).Level((lvl)).With().Stack().Logger()
 }
