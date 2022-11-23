@@ -1,7 +1,7 @@
 MODULE_PKG := github.com/wolfeidau/hotwire-golang-website
 WATCH := (.go$$)|(.html$$)
 
-GOLANGCI_VERSION = v1.43.0
+GOLANGCI_VERSION = v1.50.1
 
 GIT_HASH := $(shell git rev-parse --short HEAD)
 BUILD_DATE := $(shell date -u '+%Y%m%dT%H%M%S')
@@ -21,6 +21,12 @@ ci: clean lint test
 
 LDFLAGS := -ldflags="-s -w -X $(MODULE_PKG)/internal/app.BuildDate=${BUILD_DATE} -X $(MODULE_PKG)/internal/app.Commit=${GIT_HASH}"
 
+$(BIN_DIR)/golangci-lint: $(BIN_DIR)/golangci-lint-${GOLANGCI_VERSION}
+	@ln -sf golangci-lint-${GOLANGCI_VERSION} $(BIN_DIR)/golangci-lint
+$(BIN_DIR)/golangci-lint-${GOLANGCI_VERSION}:
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s $(GOLANGCI_VERSION)
+	@mv $(BIN_DIR)/golangci-lint $@
+
 mocks: $(BIN_DIR)/mockgen
 	@echo "--- build all the mocks"
 	go run github.com/golang/mock/mockgen -destination=mocks/session_store.go -package=mocks github.com/dghubble/sessions Store
@@ -38,14 +44,14 @@ scan-report: $(BIN_DIR)/gosec
 	$(BIN_DIR)/gosec -no-fail -fmt sarif -out results.sarif ./...
 .PHONY: scan-report
 
-lint:
+lint: $(BIN_DIR)/golangci-lint
 	@echo "--- lint all the things"
-	@docker run --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v1.43.0 golangci-lint run -v
+	@$(BIN_DIR)/golangci-lint run ./...
 .PHONY: lint
 
-lint-fix:
+lint-fix: $(BIN_DIR)/golangci-lint
 	@echo "--- lint all the things"
-	@docker run --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v1.43.0 golangci-lint run -v --fix
+	@$(BIN_DIR)/golangci-lint run --fix ./...
 .PHONY: lint-fix
 
 test:
@@ -58,8 +64,8 @@ install:
 	@cd assets && npm ci
 .PHONY: install
 
-watch: 
-	go run github.com/cespare/reflex -r "$(WATCH)" -s -- make start
+watch:
+	@ADDR=localhost:9443 go run github.com/cespare/reflex -r "$(WATCH)" -s -- make start
 .PHONY: watch
 
 start:

@@ -6,7 +6,7 @@ This project provides some working examples using [Go](https://golang.org) the [
 
 This service illustrates how to use turbo to enable updates to a website using primarily service side code.
 
-1. Uses [html/template](https://golang.org/pkg/html/template/) for [views](views).
+1. Uses [html/template](https://golang.org/pkg/html/template/) via my helper library [echo-go-templates](github.com/wolfeidau/echo-go-templates) which provides layout helpers, and embedded assets with [io/fs](https://pkg.go.dev/io/fs) for [views](views).
 2. Uses [echo](https://echo.labstack.com/) library to simplify routing.
 3. Uses a CDN to host all css / JS libraries [base.html](views/layouts/base.html).
 4. Uses [esbuild](https://esbuild.github.io) to automatically bundle JS assets on startup using [echo-esbuild-middleware](https://github.com/wolfeidau/echo-esbuild-middleware) to serve them.

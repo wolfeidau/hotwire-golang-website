@@ -16,7 +16,7 @@ type API struct {
 // ServerAPI server api related flags passing in env variables
 type ServerAPI struct {
 	API
-	Port     string `help:"Port number to bind our TLS listener." env:"PORT" default:"9443"`
+	Addr     string `help:"Address to bind our TLS listener." env:"ADDR" default:":9443"`
 	CertFile string `help:"Certificate used to bind our TLS listener." env:"CERT_FILE" default:".certs/hotwire.localhost.pem"`
 	KeyFile  string `help:"Private Key used to bind our TLS listener." env:"KEY_FILE" default:".certs/hotwire.localhost.key"`
 	Level    string `help:"The log level used for loggers." env:"LEVEL" default:"info" enum:"info,debug,warn,error"`
