@@ -35,6 +35,12 @@ To get this project running you need to setup some certificates, in my case I us
 make certs
 ```
 
+To install node dependencies
+
+```
+make install
+```
+
 To start the service just run.
 
 ```
